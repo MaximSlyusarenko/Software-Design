@@ -31,17 +31,23 @@ public class LRUCache<K, V> {
             becomeHead(node);
             result = Optional.of(node.value);
         }
-        assert key == head.key : "Key didn't become head after get";
+        assert !result.isPresent() || key.equals(head.key) : "Key didn't become head after get";
         return result;
     }
 
     public void set(K key, V value) {
         assert keyToNode.size() <= capacity : "Map size is greater than capacity";
-        Node<K, V> headBefore = new Node<K, V>(head);
-        Node<K, V> tailBefore = new Node<K, V>(tail);
+        int sizeBefore = keyToNode.size();
+        Node<K, V> headBefore = new Node<>(head);
+        Node<K, V> tailBefore = new Node<>(tail);
         boolean inserted = false;
-        if (keyToNode.size() == 0 || (keyToNode.size() == capacity && capacity == 1)) {
+        if (keyToNode.size() == 0) {
             head = new Node<>(key, value);
+            keyToNode.put(key, head);
+        } else if (keyToNode.size() == capacity && capacity == 1) {
+            keyToNode.remove(head.key);
+            head = new Node<>(key, value);
+            keyToNode.put(key, head);
         } else if (keyToNode.size() == capacity) {
             Node<K, V> node = keyToNode.get(key);
             if (node == null) {
@@ -60,13 +66,13 @@ public class LRUCache<K, V> {
         if (capacity == 1) {
             assert tail == null : "Capacity is one, tail is not null";
         }
-        if (inserted) {
-            assert tailBefore.key != tail.key && tailBefore.value != tail.value : "The map was full, but tail hasn't changed";
+        if (tailBefore.key != null && inserted && sizeBefore != capacity) {
+            assert tailBefore.key.equals(tail.key) : "The map wasn't full, but tail has changed";
         }
         if (headBefore.key == key) {
             assert head == headBefore : "Head has changed, but mustn't";
         } else {
-            assert head.key != headBefore.key : "Head hasn't change but must";
+            assert !head.key.equals(headBefore.key) : "Head hasn't change but must";
         }
     }
 
@@ -107,10 +113,7 @@ public class LRUCache<K, V> {
         private Node<NK, NV> next;
 
         private Node(NK key, NV value) {
-            this.key = key;
-            this.value = value;
-            this.prev = null;
-            this.next = null;
+            this(key, value, null, null);
         }
 
         private Node(NK key, NV value, Node<NK, NV> prev, Node<NK, NV> next) {
@@ -121,10 +124,8 @@ public class LRUCache<K, V> {
         }
 
         private Node(Node<NK, NV> node) {
-            this.key = node.key;
-            this.value = node.value;
-            this.prev = node.prev;
-            this.next = node.next;
+            this(node == null ? null : node.key, node == null ? null : node.value,
+                    node == null ? null : node.prev, node == null ? null : node.next);
         }
     }
 }
