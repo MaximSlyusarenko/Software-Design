@@ -32,6 +32,7 @@ public class LRUCache<K, V> {
             result = Optional.of(node.value);
         }
         assert !result.isPresent() || key.equals(head.key) : "Key didn't become head after get";
+        assert keyToNode.size() <= capacity : "Map size is greater than capacity";
         return result;
     }
 
@@ -74,6 +75,7 @@ public class LRUCache<K, V> {
         } else {
             assert !head.key.equals(headBefore.key) : "Head hasn't change but must";
         }
+        assert keyToNode.size() <= capacity : "Map size is greater than capacity";
     }
 
     private void becomeHead(Node<K, V> node) {
