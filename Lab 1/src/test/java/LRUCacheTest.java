@@ -7,16 +7,9 @@ import org.junit.Test;
  */
 public class LRUCacheTest {
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void constructorTest() {
-        try {
-            new LRUCache<>(0);
-            Assert.assertTrue(false);
-        } catch (IllegalArgumentException ignored) {
-
-        } catch (Exception e) {
-            Assert.assertTrue(false);
-        }
+        new LRUCache<>(0);
     }
 
     @Test
