@@ -25,6 +25,8 @@
     </build>
     <modules>
         <module>Lab 1</module>
+        <module>Lab 2</module>
+        <module>Core</module>
     </modules>
 
     <dependencies>

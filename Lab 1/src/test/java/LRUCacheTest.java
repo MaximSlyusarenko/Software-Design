@@ -1,5 +1,6 @@
 import org.junit.Assert;
 import org.junit.Test;
+import ru.ifmo.ctddev.slyusarenko.sd.lab1.LRUCache;
 
 /**
  * @author Maxim Slyusarenko

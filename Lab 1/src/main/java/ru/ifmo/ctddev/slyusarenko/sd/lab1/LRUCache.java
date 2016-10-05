@@ -1,3 +1,5 @@
+package ru.ifmo.ctddev.slyusarenko.sd.lab1;
+
 import com.google.common.base.Preconditions;
 
 import java.util.HashMap;
