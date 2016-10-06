@@ -18,18 +18,12 @@ public class HttpBasedProcessor {
     private CloseableHttpClient client;
 
     public HttpBasedProcessor() {
-        // TODO: form client
         client = HttpClientBuilder.create().build();
     }
 
     public String execute(HttpUriRequest request) throws IOException {
         return client.execute(request, response -> {
             // TODO: swap with real implementation
-//            byte[] bytes = IOUtils.toByteArray(response.getEntity().getContent());
-//            StringBuilder stringBuilder = new StringBuilder(new String(bytes, "UTF-8"));
-//            stringBuilder.insert(1, ",");
-//            stringBuilder.insert(1, response.getStatusLine().getStatusCode());
-//            return stringBuilder.toString();
             return response.toString();
         }, null);
     }
