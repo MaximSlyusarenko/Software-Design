@@ -1,13 +1,12 @@
 package ru.ifmo.ctddev.slyusarenko.sd.core;
 
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Maxim Slyusarenko
@@ -23,8 +22,8 @@ public class HttpBasedProcessor {
 
     public String execute(HttpUriRequest request) throws IOException {
         return client.execute(request, response -> {
-            // TODO: swap with real implementation
-            return response.toString();
+            InputStream in = response.getEntity().getContent();
+            return IOUtils.toString(in, "UTF-8");
         }, null);
     }
 }
