@@ -1,3 +1,5 @@
+package ctddev.slyusarenko.sd.lab2.tests;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
