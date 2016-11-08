@@ -2,8 +2,8 @@ package ru.ifmo.ctddev.slyusarenko.sd.lab5.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.ifmo.ctddev.slyusarenko.sd.lab5.dao.ProductDao;
-import ru.ifmo.ctddev.slyusarenko.sd.lab5.dao.ProductInMemoryDao;
+import ru.ifmo.ctddev.slyusarenko.sd.lab5.dao.TaskListDao;
+import ru.ifmo.ctddev.slyusarenko.sd.lab5.dao.TaskListInMemoryDao;
 
 /**
  * @author Maxim Slyusarenko
@@ -12,7 +12,7 @@ import ru.ifmo.ctddev.slyusarenko.sd.lab5.dao.ProductInMemoryDao;
 @Configuration
 public class InMemoryDaoContextConfiguration {
     @Bean
-    public ProductDao productDao() {
-        return new ProductInMemoryDao();
+    public TaskListDao taskListDao() {
+        return new TaskListInMemoryDao();
     }
 }

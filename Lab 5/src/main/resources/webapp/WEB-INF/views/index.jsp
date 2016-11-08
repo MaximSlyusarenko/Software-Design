@@ -6,40 +6,24 @@
 <html>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <head>
-    <title>Add question</title>
+    <title>Task List</title>
 </head>
 <body>
 
-<h3>Select products</h3>
-<form:form modelAttribute="filter" method="GET" action="/filter-products">
-    <form:select path="filter">
-        <form:option value="all">all</form:option>
-        <form:option value="max">max</form:option>
-        <form:option value="min">min</form:option>
-    </form:select>
-    <input type="submit" value="filter">
-</form:form>
-
 <table>
-    <c:forEach var="product" items="${products}">
+    <c:forEach var="list" items="${lists}">
         <tr>
-            <td>${product.getId()}</td>
-            <td>${product.getName()}</td>
-            <td>${product.getPrice()}</td>
+            <td>${list.getName()}</td>
         </tr>
     </c:forEach>
 </table>
 
-<h3>Add new products</h3>
-<form:form modelAttribute="product" method="POST" action="/add-product">
+<h3>Add new List</h3>
+<form:form modelAttribute="taskList" method="POST" action="/add-task-list">
     <table>
         <tr>
             <td><form:label path="name">Name:</form:label></td>
             <td><form:input path="name"/></td>
-        </tr>
-        <tr>
-            <td><form:label path="price">Price:</form:label></td>
-            <td><form:input path="price"/></td>
         </tr>
     </table>
 
