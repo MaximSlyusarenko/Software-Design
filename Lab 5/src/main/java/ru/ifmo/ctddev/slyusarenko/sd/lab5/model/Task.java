@@ -13,4 +13,5 @@ public class Task {
     private int id;
     private String name;
     private boolean done;
+    private int listId;
 }

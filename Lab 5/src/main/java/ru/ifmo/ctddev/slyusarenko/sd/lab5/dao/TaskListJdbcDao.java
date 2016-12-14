@@ -1,7 +1,9 @@
 package ru.ifmo.ctddev.slyusarenko.sd.lab5.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import ru.ifmo.ctddev.slyusarenko.sd.lab5.model.Task;
 import ru.ifmo.ctddev.slyusarenko.sd.lab5.model.TaskList;
 
 import javax.sql.DataSource;
@@ -13,8 +15,11 @@ import java.util.List;
  */
 public class TaskListJdbcDao extends JdbcDaoSupport implements TaskListDao {
 
+    @Autowired
+    private TaskDao taskDao;
+
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS LISTS" +
-            " (NAME TEXT PRIMARY KEY NOT NULL)";
+            " (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, NAME TEXT NOT NULL)";
 
     public TaskListJdbcDao(DataSource dataSource) {
         super();
@@ -32,6 +37,10 @@ public class TaskListJdbcDao extends JdbcDaoSupport implements TaskListDao {
     public List<TaskList> getTaskLists() {
         getJdbcTemplate().execute(CREATE_TABLE);
         String sql = "SELECT * FROM LISTS";
-        return getJdbcTemplate().query(sql, new BeanPropertyRowMapper<>(TaskList.class));
+        List<TaskList> taskLists = getJdbcTemplate().query(sql, new BeanPropertyRowMapper<>(TaskList.class));
+        for (TaskList taskList : taskLists) {
+            taskList.setTasks(taskDao.getTasksForList(taskList));
+        }
+        return taskLists;
     }
 }

@@ -7,11 +7,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.ifmo.ctddev.slyusarenko.sd.lab5.dao.TaskDao;
 import ru.ifmo.ctddev.slyusarenko.sd.lab5.dao.TaskListDao;
+import ru.ifmo.ctddev.slyusarenko.sd.lab5.model.Task;
 import ru.ifmo.ctddev.slyusarenko.sd.lab5.model.TaskList;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Maxim Slyusarenko
@@ -21,6 +22,8 @@ import java.util.Optional;
 public class ProductController {
     @Autowired
     private TaskListDao taskListDao;
+    @Autowired
+    private TaskDao taskDao;
 
     @RequestMapping(value = "/add-task-list", method = RequestMethod.POST)
     public String addTaskList(@ModelAttribute("taskList") TaskList taskList) {
@@ -34,8 +37,26 @@ public class ProductController {
         return "index";
     }
 
+    @RequestMapping(value = "/add-task", method = RequestMethod.POST)
+    public String addTask(@ModelAttribute("task") Task task) {
+        taskDao.addTask(task);
+        return "redirect:/get-task-lists";
+    }
+
+    @RequestMapping(value = "/update-task", method = RequestMethod.POST)
+    public String updateTask(@RequestParam String action, @ModelAttribute("updateTask") Task task) {
+        if ("Change Status".equals(action)) {
+            taskDao.changeStatus(task);
+        } else if ("Remove Task".equals(action)) {
+            taskDao.removeTask(task);
+        }
+        return "redirect:/get-task-lists";
+    }
+
     private void prepareModelMap(ModelMap map, List<TaskList> lists) {
         map.addAttribute("lists", lists);
         map.addAttribute("taskList", new TaskList());
+        map.addAttribute("task", new Task());
+        map.addAttribute("updateTask", new Task());
     }
 }
