@@ -1,5 +1,7 @@
 package ru.ifmo.ctddev.slyusarenko.sd.lab7.parser;
 
+import ru.ifmo.ctddev.slyusarenko.sd.lab7.parser.state.Node;
+import ru.ifmo.ctddev.slyusarenko.sd.lab7.parser.state.NumberNode;
 import ru.ifmo.ctddev.slyusarenko.sd.lab7.token.*;
 
 import java.io.IOException;
@@ -13,69 +15,47 @@ import java.util.List;
  */
 public class Tokenizer {
 
-    private ParserState state;
-
-    public Tokenizer() {
-        state = new ParserState();
-    }
-
-    private void maybeAddNumberToTokens(List<Token> tokens) {
-        if (state.getCurrentNumber() != -1) {
-            tokens.add(new NumberToken(state.getCurrentNumber()));
-            state.setCurrentNumber(-1);
-        }
-    }
-
     public List<Token> parse(InputStream is) throws IOException, ParseException {
         List<Token> result = new ArrayList<>();
         int cur;
         int position = 0;
+        Node currentNode = new NumberNode();
+        ParserState state = new ParserState();
         while ((cur = is.read()) != -1) {
             char c = (char) cur;
             if (c >= '0' && c <= '9') {
-                state.setCurrentNumber((state.getCurrentNumber() == -1 ? 0 : state.getCurrentNumber()) * 10 + cur - '0');
+                currentNode = currentNode.onDigit(state, result, c - '0');
                 continue;
             }
             if (Character.isWhitespace(c)) {
-                maybeAddNumberToTokens(result);
+                currentNode = currentNode.onWhitespace(state, result);
                 continue;
             }
             switch (c) {
                 case '(':
-                    maybeAddNumberToTokens(result);
-                    state.setParenthesisBalance(state.getParenthesisBalance() + 1);
-                    result.add(new Brace(BraceType.LEFT));
+                    currentNode = currentNode.onOpenParenthesis(state, result);
                     break;
                 case ')':
-                    maybeAddNumberToTokens(result);
-                    if (state.getParenthesisBalance() == 0) {
-                        throw new ParseException("Unexpected closed parenthesis on position " + position);
-                    }
-                    state.setParenthesisBalance(state.getParenthesisBalance() - 1);
-                    result.add(new Brace(BraceType.RIGHT));
+                    currentNode = currentNode.onCloseParenthesis(state, result);
                     break;
                 case '+':
-                    maybeAddNumberToTokens(result);
-                    result.add(new Operation(OperationType.PLUS));
+                    currentNode = currentNode.onPlus(state, result);
                     break;
                 case '-':
-                    maybeAddNumberToTokens(result);
-                    result.add(new Operation(OperationType.MINUS));
+                    currentNode = currentNode.onMinus(state, result);
                     break;
                 case '*':
-                    maybeAddNumberToTokens(result);
-                    result.add(new Operation(OperationType.MULTIPLY));
+                    currentNode = currentNode.onMultiply(state, result);
                     break;
                 case '/':
-                    maybeAddNumberToTokens(result);
-                    result.add(new Operation(OperationType.DIVIDE));
+                    currentNode = currentNode.onDivide(state, result);
                     break;
                 default:
                     throw new ParseException("Unexpected symbol " + c + " on position " + position);
             }
             position++;
         }
-        maybeAddNumberToTokens(result);
+        currentNode.finish(state, result);
         return result;
     }
 }
