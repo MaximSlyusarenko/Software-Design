@@ -12,4 +12,6 @@ public interface DrawingApi {
     long getDrawingAreaHeight();
     void drawCircle(Point center, long radius);
     void drawLine(Point start, Point finish);
+    void initializeFrame();
+    void startFrame();
 }

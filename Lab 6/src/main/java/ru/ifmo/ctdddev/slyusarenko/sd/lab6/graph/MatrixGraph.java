@@ -23,6 +23,7 @@ public class MatrixGraph extends Graph {
 
     @Override
     public void drawGraph() {
+        drawingApi.initializeFrame();
         Map<Integer, Point> vertexNumberToCoordinates = new HashMap<>();
         for (int i = 0; i < vertexNumber; i++) {
             Point point = new Point(((drawingApi.getDrawingAreaWidth() / 2 + (i == 0 ? 0 : i + 1) * ((drawingApi.getDrawingAreaWidth() - 2 * VERTEX_RADIUS) / vertexNumber)) % drawingApi.getDrawingAreaWidth()),
@@ -39,5 +40,6 @@ public class MatrixGraph extends Graph {
             }
             i++;
         }
+        drawingApi.startFrame();
     }
 }

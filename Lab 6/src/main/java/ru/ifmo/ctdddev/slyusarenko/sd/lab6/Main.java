@@ -3,12 +3,8 @@ package ru.ifmo.ctdddev.slyusarenko.sd.lab6;
 import ru.ifmo.ctdddev.slyusarenko.sd.lab6.drawing.AwtDrawing;
 import ru.ifmo.ctdddev.slyusarenko.sd.lab6.drawing.DrawingApi;
 import ru.ifmo.ctdddev.slyusarenko.sd.lab6.drawing.JavaFxDrawing;
-import ru.ifmo.ctdddev.slyusarenko.sd.lab6.frames.AwtFrame;
-import ru.ifmo.ctdddev.slyusarenko.sd.lab6.frames.JavaFxFrame;
 import ru.ifmo.ctdddev.slyusarenko.sd.lab6.graph.*;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,41 +32,30 @@ public class Main {
             return;
         }
         initEdges();
-        if (args[0].equals("javafx")) {
-            DrawingApi drawingApi;
-            JavaFxFrame.init(WIDTH, HEIGHT);
-            drawingApi = new JavaFxDrawing(WIDTH, HEIGHT, JavaFxFrame.getGraphicsContext());
-            Graph graph;
-            switch (args[1]) {
-                case "matrix":
-                    graph = new MatrixGraph(drawingApi, MATRIX);
-                    break;
-                case "edges":
-                    graph = new EdgesListGraph(drawingApi, edges);
-                    break;
-                default:
-                    System.out.println("args[1] should be matrix or edges");
-                    return;
-            }
-            graph.drawGraph();
-            JavaFxFrame.main(new String[]{});
-        } else if (args[0].equals("awt")) {
-            AwtFrame frame;
-            switch (args[1]) {
-                case "matrix":
-                    frame = new AwtFrame(WIDTH, HEIGHT, MATRIX);
-                    break;
-                case "edges":
-                    frame = new AwtFrame(WIDTH, HEIGHT, edges);
-                    break;
-                default:
-                    System.out.println("args[1] should be matrix or edges");
-                    return;
-            }
-            frame.setSize((int) WIDTH, (int) HEIGHT);
-            frame.setVisible(true);
-        } else {
-            System.out.println("args[0] should be awt or javafx");
+        DrawingApi drawingApi;
+        switch (args[0]) {
+            case "javafx":
+                drawingApi = new JavaFxDrawing(WIDTH, HEIGHT);
+                break;
+            case "awt":
+                drawingApi = new AwtDrawing(WIDTH, HEIGHT);
+                break;
+            default:
+                System.out.println("args[0] should be javafx or awt");
+                return;
         }
+        Graph graph;
+        switch (args[1]) {
+            case "matrix":
+                graph = new MatrixGraph(drawingApi, MATRIX);
+                break;
+            case "edges":
+                graph = new EdgesListGraph(drawingApi, edges);
+                break;
+            default:
+                System.out.println("args[1] should be matrix or edges");
+                return;
+        }
+        graph.drawGraph();
     }
 }
