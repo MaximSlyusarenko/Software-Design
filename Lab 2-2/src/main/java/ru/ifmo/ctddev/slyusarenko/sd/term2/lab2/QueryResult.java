@@ -24,6 +24,7 @@ public class QueryResult {
         int i = 1;
         for (DocumentResult s : results) {
             result.append(i).append(". ").append(s.getHeader()).append("\n").append(s.getUrl()).append("\n").append(s.getText()).append("\n");
+            i++;
         }
         return result.toString();
     }

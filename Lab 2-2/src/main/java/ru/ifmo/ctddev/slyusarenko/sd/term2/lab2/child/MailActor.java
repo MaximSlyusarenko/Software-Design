@@ -7,12 +7,12 @@ package ru.ifmo.ctddev.slyusarenko.sd.term2.lab2.child;
 public class MailActor extends ChildActor {
 
     @Override
-    protected String getQueryResultString(String query) {
-        return null;
+    protected String getSearchSystem() {
+        return "mail.ru";
     }
 
     @Override
-    protected String getSearchSystem() {
-        return null;
+    protected int getPort() {
+        return 8888;
     }
 }

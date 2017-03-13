@@ -1,6 +1,12 @@
 package ru.ifmo.ctddev.slyusarenko.sd.term2.lab2.child;
 
-import akka.actor.UntypedActor;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
+import ru.ifmo.ctddev.slyusarenko.sd.core.HttpBasedProcessor;
+
+import java.io.IOException;
 
 /**
  * @author Maxim Slyusarenko
@@ -9,12 +15,12 @@ import akka.actor.UntypedActor;
 public class GoogleActor extends ChildActor {
 
     @Override
-    protected String getQueryResultString(String query) {
-        return null;
+    protected String getSearchSystem() {
+        return "google.com";
     }
 
     @Override
-    protected String getSearchSystem() {
-        return null;
+    protected int getPort() {
+        return 8890;
     }
 }

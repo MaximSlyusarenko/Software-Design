@@ -9,12 +9,12 @@ import akka.actor.UntypedActor;
 public class YandexActor extends ChildActor {
 
     @Override
-    protected String getQueryResultString(String query) {
-        return null;
+    protected String getSearchSystem() {
+        return "yandex.ru";
     }
 
     @Override
-    protected String getSearchSystem() {
-        return null;
+    protected int getPort() {
+        return 8889;
     }
 }

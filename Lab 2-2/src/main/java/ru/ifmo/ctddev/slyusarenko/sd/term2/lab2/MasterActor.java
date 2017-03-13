@@ -19,18 +19,17 @@ import java.util.concurrent.TimeUnit;
  */
 public class MasterActor extends UntypedActor {
 
-    private List<QueryResult> results;
+    private List<QueryResult> results = new ArrayList<>();
 
     @Override
     public void onReceive(Object message) throws Throwable {
-        results = new ArrayList<>();
         if (message instanceof Query) {
             String query = ((Query) message).getQuery();
             int number = ((Query) message).getQueryNumber();
             createChildActor("Google", query, number);
             createChildActor("Yandex", query, number);
             createChildActor("Mail", query, number);
-            getContext().setReceiveTimeout(Duration.create(1.0, TimeUnit.SECONDS));
+            getContext().setReceiveTimeout(Duration.create(1, TimeUnit.SECONDS));
         } else if (message instanceof QueryResult) {
             results.add((QueryResult) message);
             if (results.size() == 3) {
@@ -44,9 +43,9 @@ public class MasterActor extends UntypedActor {
     }
 
     private void sendToParent() {
-        self().tell(new QueryResults(results), getContext().parent());
+        getContext().parent().tell(new QueryResults(results), getContext().self());
         getContext().setReceiveTimeout(Duration.Undefined());
-        getContext().stop(self()); // FIXME: is it correct?
+        getContext().stop(self());
     }
 
     private void createChildActor(String searchSystem, String query, int number) {
