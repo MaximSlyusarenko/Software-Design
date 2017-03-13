@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import ru.ifmo.ctddev.slyusarenko.sd.lab5.model.Task;
 import ru.ifmo.ctddev.slyusarenko.sd.lab5.model.TaskList;
+import ru.ifmo.ctddev.slyusarenko.sd.term2.lab1.Profileble;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -27,6 +28,7 @@ public class TaskListJdbcDao extends JdbcDaoSupport implements TaskListDao {
     }
 
     @Override
+    @Profileble
     public String addTaskList(TaskList taskList) {
         String sql = "INSERT INTO LISTS (NAME) VALUES (?)";
         getJdbcTemplate().update(sql, new Object[] { taskList.getName() });
@@ -34,6 +36,7 @@ public class TaskListJdbcDao extends JdbcDaoSupport implements TaskListDao {
     }
 
     @Override
+    @Profileble
     public List<TaskList> getTaskLists() {
         getJdbcTemplate().execute(CREATE_TABLE);
         String sql = "SELECT * FROM LISTS";

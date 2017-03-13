@@ -21,34 +21,24 @@ import java.util.concurrent.locks.ReentrantLock;
 @Aspect
 public class ProfileAspect {
 
-    private final Map<String, Integer> methodInvocationCount = new HashMap<>();
-    private final Map<String, Long> methodAverageTime = new HashMap<>();
-    private final Map<String, Long> methodSumTimes = new HashMap<>();
+    private final Map<String, MethodStatistic> methodStatistics = new HashMap<>();
+    private String parent = null;
     private Lock lock = new ReentrantLock();
     private ScheduledExecutorService executor;
 
     @Around("execution(* *(..)) && @annotation(Profileble)")
     public Object profileExecution(ProceedingJoinPoint joinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
+        String prevParent = parent;
+        parent = joinPoint.toShortString();
         Object result = joinPoint.proceed(joinPoint.getArgs());
+        parent = prevParent;
         long finishTime = System.currentTimeMillis();
         try {
             lock.lock();
-            int newCount = methodInvocationCount.compute(joinPoint.toShortString(), (key, value) -> {
-                if (value == null) {
-                    return 1;
-                } else {
-                    return value + 1;
-                }
-            });
-            long newSumTimes = methodSumTimes.compute(joinPoint.toShortString(), (key, value) -> {
-                if (value == null) {
-                    return finishTime - startTime;
-                } else {
-                    return value + (finishTime - startTime);
-                }
-            });
-            methodAverageTime.put(joinPoint.toShortString(), (long) ((double) newSumTimes / (double) newCount));
+            methodStatistics.putIfAbsent(joinPoint.toShortString(), new MethodStatistic(joinPoint.toShortString()));
+            MethodStatistic methodStatistic = methodStatistics.get(joinPoint.toShortString());
+            methodStatistic.addMeasurement(prevParent == null ? null : methodStatistics.get(parent), finishTime - startTime);
         } finally {
             lock.unlock();
         }
@@ -63,17 +53,8 @@ public class ProfileAspect {
         try {
             lock.lock();
             System.out.println("-----------------------------------------------------");
-            System.out.println("Method invocations: ");
-            for (Map.Entry<String, Integer> entry : methodInvocationCount.entrySet()) {
-                System.out.println("There were " + entry.getValue() + " invocations of method " + entry.getKey());
-            }
-            System.out.println("Average times: ");
-            for (Map.Entry<String, Long> entry : methodAverageTime.entrySet()) {
-                System.out.println("Average execution time of method " + entry.getKey() + " is " + entry.getValue() + " ms");
-            }
-            System.out.println("Sum times: ");
-            for (Map.Entry<String, Long> entry : methodSumTimes.entrySet()) {
-                System.out.println("Sum of execution times for method " + entry.getKey() + " is " + entry.getValue() + " ms");
+            for (MethodStatistic methodStatistic : methodStatistics.values()) {
+                System.out.println(methodStatistic.toString());
             }
             System.out.println("-----------------------------------------------------");
         } finally {

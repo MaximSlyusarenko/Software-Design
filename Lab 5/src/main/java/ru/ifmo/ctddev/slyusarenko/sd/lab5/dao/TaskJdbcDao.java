@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import ru.ifmo.ctddev.slyusarenko.sd.lab5.model.Task;
 import ru.ifmo.ctddev.slyusarenko.sd.lab5.model.TaskList;
+import ru.ifmo.ctddev.slyusarenko.sd.term2.lab1.Profileble;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -24,24 +25,28 @@ public class TaskJdbcDao extends JdbcDaoSupport implements TaskDao {
     }
 
     @Override
+    @Profileble
     public void addTask(Task task) {
         String sql = "INSERT INTO TASKS (NAME, DONE, LISTID) VALUES (?, ?, ?)";
         getJdbcTemplate().update(sql, new Object[] { task.getName(), false, task.getListId() });
     }
 
     @Override
+    @Profileble
     public void changeStatus(Task task) {
         String sql = "UPDATE TASKS SET DONE = NOT DONE WHERE ID = ? AND LISTID = ?";
         getJdbcTemplate().update(sql, new Object[] { task.getId(), task.getListId() });
     }
 
     @Override
+    @Profileble
     public void removeTask(Task task) {
         String sql = "DELETE FROM TASKS WHERE ID = ?";
         getJdbcTemplate().update(sql, new Object[] { task.getId() });
     }
 
     @Override
+    @Profileble
     public List<Task> getTasksForList(TaskList taskList) {
         getJdbcTemplate().execute(CREATE_TABLE);
         String sql = "SELECT T.ID, T.NAME, T.DONE FROM TASKS AS T INNER JOIN LISTS AS L ON T.LISTID = L.ID WHERE L.ID = " + taskList.getId();
