@@ -32,6 +32,7 @@
         <module>Lab 7</module>
         <module>Lab 2-1</module>
         <module>Lab 2-2</module>
+        <module>Lab 2-4</module>
     </modules>
 
     <dependencies>
